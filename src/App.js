@@ -18,17 +18,29 @@ export default function App() {
       setResult(respond.data.query.search);
       //console.log(respond.data.query.search);
     };
-    if (term) {
-      search();
+
+    if (!result.length) {
+      if (term) {
+        search();
+      }
+    } else {
+      const DebounceSearch = setTimeout(() => {
+        if (term) {
+          search();
+        }
+      }, 2500);
+      return () => {
+        clearTimeout(DebounceSearch);
+      }
     }
-  }, [term]);
+  }, [term, result.length]);
 
   const fetchResult = result.map((elm) => {
     return (
-      <tr>
-        <th scope="row" key={elm.pageid}>
+      <tr key={elm.pageid}>
+        <td scope="row">
           1
-        </th>
+        </td>
         <td>{elm.title}</td>
         <td>
           <span dangerouslySetInnerHTML={{ __html: elm.snippet }} />
