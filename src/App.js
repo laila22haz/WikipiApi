@@ -1,8 +1,12 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import axios from "axios";
+import usePrevState from "./hooks/usePrevState";
+
 export default function App() {
   const [term, setTerm] = useState("");
   const [result, setResult] = useState([]);
+  const prevTerm = usePrevState(term);
+  
 
   useEffect(() => {
     const search = async () => {
@@ -23,7 +27,7 @@ export default function App() {
       if (term) {
         search();
       }
-    } else {
+    } else if(prevTerm !== term){
       const DebounceSearch = setTimeout(() => {
         if (term) {
           search();
@@ -33,7 +37,7 @@ export default function App() {
         clearTimeout(DebounceSearch);
       }
     }
-  }, [term, result.length]);
+  }, [term, result.length, prevTerm]);
 
   const fetchResult = result.map((elm) => {
     return (
